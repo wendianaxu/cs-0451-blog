@@ -129,6 +129,7 @@ background-size: cover;
     }
     </style>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -180,25 +181,25 @@ background-size: cover;
 
 <section id="perceptron" class="level1">
 <h1>Perceptron</h1>
-<p><a href="">Source code</a></p>
+<p><a href="https://github.com/wendianaxu/cs-0451-blog/blob/main/posts/perceptron/perceptron.py">Source code</a></p>
 <section id="implementing-the-perceptron" class="level2">
 <h2 class="anchored" data-anchor-id="implementing-the-perceptron">Implementing the perceptron</h2>
 <p>I implemented the perceptron update with the following steps:</p>
 <ol type="1">
-<li>Modifying the feature matrix X and vector of labels <em>y</em>. This includes appending a column of 1s to X and turning <em>y</em> into a vector of -1s and 1s.</li>
-<li>Initializing a random weight vector <em>w</em>.</li>
+<li>Modifying the feature matrix <span class="math inline">\(X\)</span> and vector of labels <span class="math inline">\(y\)</span>. This includes appending a column of 1s to <span class="math inline">\(X\)</span> and turning <span class="math inline">\(y\)</span> into a vector of -1s and 1s.</li>
+<li>Initializing a random weight vector <span class="math inline">\(w\)</span>.</li>
 <li>In a for-loop that breaks either when accuracy reaches 1 or when the specified max_steps is reached,
 <ol type="a">
-<li>Pick a random data point with index i and access its features <em>x_</em> and label <em>y_i</em>;</li>
-<li>Compute the predicted label y_hat using the current w;</li>
-<li>Perform update if <em>y</em> * <em>y_hat</em> &lt; 0:</li>
+<li>Pick a random data point with index <span class="math inline">\(i\)</span> and access its features <span class="math inline">\(x_{i}\)</span> and label <span class="math inline">\(y_{i}\)</span>;</li>
+<li>Compute the predicted label <span class="math inline">\(\hat{y}\)</span> using the current <span class="math inline">\(w\)</span>;</li>
+<li>Perform update if <span class="math inline">\(y\)</span> * <span class="math inline">\(\hat{y}\)</span> &lt; 0:</li>
 </ol></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.w <span class="op">=</span> <span class="va">self</span>.w <span class="op">+</span> (y_i<span class="op">*</span>y_hat <span class="op">&lt;</span> <span class="dv">0</span>) <span class="op">*</span> (y_i <span class="op">*</span> x_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Where only when <em>y_i</em> * <em>y_hat</em> &lt; 0 is (<em>y_i</em> * <em>x_</em>) added to the current w.</p>
-<p>Finally, the accuracy of the current w is computed by using w to predict labels for all data points, and then calculating the number of correct predictions compared to y. This accuracy is then appended to the history array.</p>
+<p>Finally, the accuracy of the current <span class="math inline">\(w\)</span> is computed by using <span class="math inline">\(w\)</span> to predict labels for all data points, and then calculating the number of correct predictions compared to <span class="math inline">\(y\)</span>. This accuracy is then appended to the history array.</p>
 </section>
 <section id="experiments" class="level2">
 <h2 class="anchored" data-anchor-id="experiments">Experiments</h2>
@@ -307,7 +308,7 @@ background-size: cover;
 </section>
 <section id="runtime-complexity" class="level2">
 <h2 class="anchored" data-anchor-id="runtime-complexity">Runtime complexity</h2>
-<p>The runtime complexity of a single iteration of the perceptron update should be <em>O(p)</em>. It would depend on the number of data points and features.</p>
+<p>The runtime complexity of a single iteration of the perceptron update should be <span class="math inline">\(O(p)\)</span>. It would depend on the number of data points and features.</p>
 
 
 </section>
