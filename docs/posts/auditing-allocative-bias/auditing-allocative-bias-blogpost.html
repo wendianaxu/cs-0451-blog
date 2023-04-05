@@ -385,7 +385,7 @@ background-size: cover;
 <section id="basic-descriptives" class="level3">
 <h3 class="anchored" data-anchor-id="basic-descriptives">Basic Descriptives</h3>
 <p>Before training any models, I will first explore the basic descriptives of the dataset.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(X_train, columns <span class="op">=</span> features_to_use)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"group"</span>] <span class="op">=</span> group_train</span>
@@ -460,137 +460,171 @@ dtype: int64</code></pre>
 </section>
 <section id="training-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="training-the-model">Training the model</h2>
-<p>I choose to use a logistic regression model with polynomial features for my prediction. I will use cross-validation to find out the best polynomial degree for the model.</p>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># create a pipeline that computes polynomial features and passes them to logistic regression</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># source: CS0451 features regulation lecture code</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poly_LR(degree, <span class="op">**</span>kwargs):</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plr <span class="op">=</span> Pipeline([(<span class="st">"poly"</span>, PolynomialFeatures(degree <span class="op">=</span> degree)),</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                    (<span class="st">"LR"</span>, LogisticRegression(max_iter <span class="op">=</span> <span class="dv">1000</span>, <span class="op">**</span>kwargs))])</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> plr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>I choose to use a decision tree classifier for my prediction. I will use cross-validation to find out the best max depth for the model.</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>cv_max <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>best_depth <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cvs <span class="op">=</span> []</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">30</span>):</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fit model</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    DTC <span class="op">=</span> DecisionTreeClassifier(max_depth <span class="op">=</span> d)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    DTC.fit(X_train, y_train)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cross-validation</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    cv_scores <span class="op">=</span> cross_val_score(DTC, X_train, y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    cv_mean <span class="op">=</span> cv_scores.mean()</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    cvs.append(cv_mean)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update best cv score and best degree</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cv_mean <span class="op">&gt;</span> cv_max:</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        cv_max <span class="op">=</span> cv_mean</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        best_depth <span class="op">=</span> d</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best cv score = "</span>, cv_max)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best max depth = "</span>, best_depth)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co"># draw a line chart for cv scores at varying degrees</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.plot(<span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">30</span>), cvs)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Max depth"</span>)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"CV score"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Best cv score =  0.8123893805309734
+Best max depth =  8</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>SVC_ <span class="op">=</span> SVC(gamma <span class="op">=</span> <span class="fl">0.1</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>SVC_.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> simplefilter</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.exceptions <span class="im">import</span> ConvergenceWarning</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>simplefilter(<span class="st">"ignore"</span>, category<span class="op">=</span>ConvergenceWarning)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>cv_max <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>best_gamma <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>cvs <span class="op">=</span> []</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g <span class="kw">in</span> np.float_power(<span class="dv">10</span>, np.arange(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>)):</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fit model</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    SVC_ <span class="op">=</span> SVC(gamma <span class="op">=</span> g)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    SVC_.fit(X_train, y_train)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cross-validation</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    cv_scores <span class="op">=</span> cross_val_score(SVC_, X_train, y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    cv_mean <span class="op">=</span> cv_scores.mean()</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    cvs.append(cv_mean)</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update best cv score and best degree</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cv_mean <span class="op">&gt;</span> cv_max:</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        cv_max <span class="op">=</span> cv_mean</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        best_gamma <span class="op">=</span> g</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>cv_max, best_gamma</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co"># draw a line chart for cv scores at varying degrees</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#import matplotlib.pyplot as plt</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#fig = plt.plot(range(1,5), cvs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate data</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>n_val <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>noise <span class="op">=</span> <span class="fl">0.2</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>train_scores <span class="op">=</span> []</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>val_scores <span class="op">=</span> []</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># increase p_features from 1 to n_train-1 and calculate training and validation scores for each</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p_features <span class="kw">in</span> np.arange(<span class="dv">1</span>, n_train): </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create data</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    X_train, y_train, X_val, y_val <span class="op">=</span> LR_data(n_train, n_val, p_features, noise)</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    LR <span class="op">=</span> LinearRegression()</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    LR.fit(X_train, y_train)</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    train_scores.append(LR.score(X_train, y_train))</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    val_scores.append(LR.score(X_val, y_val))</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="dv">1</span>, n_train), train_scores, label <span class="op">=</span> <span class="st">"Training scores"</span>)</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="dv">1</span>, n_train), val_scores, label <span class="op">=</span> <span class="st">"Validation scores"</span>)</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Number of features"</span>)</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"Score"</span>)</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>legend <span class="op">=</span> plt.legend() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-10-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We can observe from the chart that the training score increased all the way to 1.0 as the number of features increases. The validation score, however, has been fluctuating and forms a slightly downward trend, and dramatically decreased to almost 0 when the number of features reached ~99.</p>
-<p>This is a demonstration of <strong>overfitting</strong>. With too many features, the model becomes increasingly accurate in describing the trend in the training data, but at the same time takes into account more noise from the training data that doesn’t generate to the rest of the data. As a result, validation scores decrease.</p>
-<section id="lasso-regularization" class="level3">
-<h3 class="anchored" data-anchor-id="lasso-regularization">LASSO regularization</h3>
-<p>To fix overfitting, I experiment with LASSO regularization:</p>
-<div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Lasso</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># generate data</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>n_val <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>noise <span class="op">=</span> <span class="fl">0.2</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>train_scores <span class="op">=</span> []</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>val_scores <span class="op">=</span> []</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># increase p_features from 1 to n_train-1 and calculate training and validation scores for each</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p_features <span class="kw">in</span> np.arange(<span class="dv">1</span>, n_train <span class="op">+</span> <span class="dv">10</span>): </span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create data</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    X_train, y_train, X_val, y_val <span class="op">=</span> LR_data(n_train, n_val, p_features, noise)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> Lasso(alpha <span class="op">=</span> <span class="fl">0.001</span>)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    L.fit(X_train, y_train)</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    train_scores.append(L.score(X_train, y_train))</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    val_scores.append(L.score(X_val, y_val))</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="dv">1</span>, n_train <span class="op">+</span> <span class="dv">10</span>), train_scores, label <span class="op">=</span> <span class="st">"Training scores"</span>)</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="dv">1</span>, n_train <span class="op">+</span> <span class="dv">10</span>), val_scores, label <span class="op">=</span> <span class="st">"Validation scores"</span>)</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Number of features"</span>)</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"Score"</span>)</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>legend <span class="op">=</span> plt.legend() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+<p>As shown by the graph, the best performance is reached at a max depth of 8.</p>
+</section>
+<section id="auditing-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="auditing-the-model">Auditing the Model</h2>
+<p>Next, I will use the model on the test data and perform an audit for bias.</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train model and predict using test data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>DTC <span class="op">=</span> DecisionTreeClassifier(max_depth <span class="op">=</span> best_depth)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>DTC.fit(X_train, y_train)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> DTC.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="overall-measures" class="level3">
+<h3 class="anchored" data-anchor-id="overall-measures">Overall Measures</h3>
+<p>First, we will take a look at the measures for the whole dataset.</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get confusion matrix values</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>TP, FP, FN, TN <span class="op">=</span> cm[<span class="dv">0</span>][<span class="dv">0</span>], cm[<span class="dv">0</span>][<span class="dv">1</span>], cm[<span class="dv">1</span>][<span class="dv">0</span>], cm[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>test_score <span class="op">=</span> DTC.score(X_test, y_test)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>PPV <span class="op">=</span> TP <span class="op">/</span> (TP <span class="op">+</span> FP)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>FNR <span class="op">=</span> FN <span class="op">/</span> (TP <span class="op">+</span> FN)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>FPR <span class="op">=</span> FP <span class="op">/</span> (TN <span class="op">+</span> FP)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Overall accuracy = "</span>, test_score)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"PPV = "</span>, PPV)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FNR = "</span>, FNR)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FPR = "</span>, FPR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Overall accuracy =  0.8155747540196784
+PPV =  0.9173833584175446
+FNR =  0.15262400079439947
+FPR =  0.316190084344785</code></pre>
 </div>
 </div>
-<p>Using LASSO regularization, the validation scores still drops as the number of features increases, but there is no dramatical decrease as the number of features approaches, or even exceeds the number of data points. This is because LASSO is able to force entries of the weight vector to zero, which can help eliminate the effect of features that act as noise to the model.</p>
+<p>The overall accuracy and PPV show that the model is quite accurate. The FPR is one time higher than the FPR, suggesting that this model is more likely to wrongly predict that someone earns over $50K when they does not in reality, compared to wrongly predict that someone earns less than 50K.</p>
+</section>
+<section id="by-group-measures" class="level3">
+<h3 class="anchored" data-anchor-id="by-group-measures">By-Group Measures</h3>
+<p>Then we will compute the same measures by each group (i.e., male and female) and see if there are any differences.</p>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>male <span class="op">=</span> group_test <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>female <span class="op">=</span> group_test <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>correct <span class="op">=</span> (y_test <span class="op">==</span> y_pred)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>accuracy_male <span class="op">=</span> correct[male].mean()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>accuracy_female <span class="op">=</span> correct[female].mean()</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>accuracy_male, accuracy_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>(0.7849171180042672, 0.8447253433208489)</code></pre>
+</div>
+</div>
+<p>The accuracy for male and female is similar, and a little higher for female.</p>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#X_test_df = pd.DataFrame(X_test, columns = [features_to_use])</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cm_male <span class="op">=</span> confusion_matrix(y_test[male],y_pred[male])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cm_female <span class="op">=</span> confusion_matrix(y_test[female],y_pred[female])</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># male</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>TP, FP, FN, TN <span class="op">=</span> cm_male[<span class="dv">0</span>][<span class="dv">0</span>], cm_male[<span class="dv">0</span>][<span class="dv">1</span>], cm_male[<span class="dv">1</span>][<span class="dv">0</span>], cm_male[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>PPV_male <span class="op">=</span> TP <span class="op">/</span> (TP <span class="op">+</span> FP)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>FNR_male <span class="op">=</span> FN <span class="op">/</span> (TP <span class="op">+</span> FN)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>FPR_male <span class="op">=</span> FP <span class="op">/</span> (TN <span class="op">+</span> FP)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># female</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>TP, FP, FN, TN <span class="op">=</span> cm_female[<span class="dv">0</span>][<span class="dv">0</span>], cm_female[<span class="dv">0</span>][<span class="dv">1</span>], cm_female[<span class="dv">1</span>][<span class="dv">0</span>], cm_female[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>PPV_female <span class="op">=</span> TP <span class="op">/</span> (TP <span class="op">+</span> FP)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>FNR_female <span class="op">=</span> FN <span class="op">/</span> (TP <span class="op">+</span> FN)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>FPR_female <span class="op">=</span> FP <span class="op">/</span> (TN <span class="op">+</span> FP)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>PPV_male, PPV_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>(0.9252971137521222, 0.9110832206989766)</code></pre>
+</div>
+</div>
+<p>The PPV for male and female is similar too.</p>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>FNR_male, FNR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>(0.20809548521017124, 0.10175138016371597)</code></pre>
+</div>
+</div>
+<p>The false negative rate is higher for male than for female. This shows that if a man earns more than $50K, the model is more likely to make a mistake and say he earns less, compared to the same situation for a woman.</p>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>FPR_male, FPR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<pre><code>(0.24147393179145432, 0.3987012987012987)</code></pre>
+</div>
+</div>
+<p>The false positive rate is higher for female than for male. This means that the model is more likely to predict that a woman earns more than $50K when she actually earns less.</p>
+</section>
+<section id="bias-measures" class="level3">
+<h3 class="anchored" data-anchor-id="bias-measures">Bias Measures</h3>
+<p>Finally, we will calculate the three different bias measures discussed by Chouldechova (2017).</p>
+<p>The first measure is calibration. Good calibration means that a man and a woman who received the same score (in this case, either 0 or 1) have the same probability of earning over $50K.</p>
+<div class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calibration</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for male predicted positive = "</span>, y_test[male][y_pred[male] <span class="op">==</span> <span class="dv">1</span>].mean())</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for female predicted positive = "</span>, y_test[female][y_pred[female] <span class="op">==</span> <span class="dv">1</span>].mean())</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for male predicted negative = "</span>, y_test[male][y_pred[male] <span class="op">==</span> <span class="dv">0</span>].mean())</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for female predicted negative = "</span>, y_test[female][y_pred[female] <span class="op">==</span> <span class="dv">0</span>].mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>% positive for male predicted positive =  0.7585260682085456
+% positive for female predicted positive =  0.6012987012987013
+% positive for male predicted negative =  0.20809548521017124
+% positive for female predicted negative =  0.10175138016371597</code></pre>
+</div>
+</div>
+<p>The probabilities are around 0.1-0.15 higher for men than for women. It looks like the model is roughly calibrated, but still, there is a slight difference in what the same score means for the two groups.</p>
 </section>
 </section>
 <section id="bikeshare-data-set" class="level2">
 <h2 class="anchored" data-anchor-id="bikeshare-data-set">Bikeshare data set</h2>
 <p>In this section, I train my linear regression model to a bikeshare data set.</p>
 <div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.read_csv(<span class="st">"https://philchodrow.github.io/PIC16A/datasets/Bike-Sharing-Dataset/day.csv"</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>bikeshare.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.read_csv(<span class="st">"https://philchodrow.github.io/PIC16A/datasets/Bike-Sharing-Dataset/day.csv"</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>bikeshare.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 
 <div>
@@ -719,31 +753,31 @@ dtype: int64</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the number of casual users over time</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ax.plot(pd.to_datetime(bikeshare[<span class="st">'dteday'</span>]), bikeshare[<span class="st">'casual'</span>])</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"Day"</span>, ylabel <span class="op">=</span> <span class="st">"# of casual users"</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the number of casual users over time</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ax.plot(pd.to_datetime(bikeshare[<span class="st">'dteday'</span>]), bikeshare[<span class="st">'casual'</span>])</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"Day"</span>, ylabel <span class="op">=</span> <span class="st">"# of casual users"</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming data</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"casual"</span>, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mnth"</span>, </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"weathersit"</span>, </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"workingday"</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"yr"</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temp"</span>, </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hum"</span>, </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"windspeed"</span>,</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"holiday"</span>]</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> bikeshare[cols]</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.get_dummies(bikeshare, columns <span class="op">=</span> [<span class="st">'mnth'</span>], drop_first <span class="op">=</span> <span class="st">"if_binary"</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>bikeshare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming data</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"casual"</span>, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mnth"</span>, </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"weathersit"</span>, </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"workingday"</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"yr"</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temp"</span>, </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hum"</span>, </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"windspeed"</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"holiday"</span>]</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> bikeshare[cols]</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.get_dummies(bikeshare, columns <span class="op">=</span> [<span class="st">'mnth'</span>], drop_first <span class="op">=</span> <span class="st">"if_binary"</span>)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>bikeshare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 
 <div>
@@ -1023,45 +1057,45 @@ dtype: int64</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train-test split</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(bikeshare, test_size <span class="op">=</span> <span class="fl">.2</span>, shuffle <span class="op">=</span> <span class="va">False</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> train.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">"casual"</span>]</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> test.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test[<span class="st">"casual"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train-test split</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(bikeshare, test_size <span class="op">=</span> <span class="fl">.2</span>, shuffle <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> train.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">"casual"</span>]</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> test.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test[<span class="st">"casual"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit and score the model</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LinearRegression()</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train, y_train)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>LR.score(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit and score the model</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LinearRegression()</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train, y_train)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>LR.score(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <pre><code>0.7318355359284503</code></pre>
 </div>
 </div>
 <p>The model has a score of 0.73.</p>
 <div class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute predictions and visualize in comparison to actual test data</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> LR.predict(X_test)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_hat, label <span class="op">=</span> <span class="st">"Predictions"</span>)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_test, label <span class="op">=</span> <span class="st">"Test data"</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>         </span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Day"</span>)</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"Number of casual users"</span>)</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>legend <span class="op">=</span> plt.legend() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute predictions and visualize in comparison to actual test data</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> LR.predict(X_test)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_hat, label <span class="op">=</span> <span class="st">"Predictions"</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_test, label <span class="op">=</span> <span class="st">"Test data"</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Day"</span>)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"Number of casual users"</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>legend <span class="op">=</span> plt.legend() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-23-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>It seems that the model does a good job in predicting the general trend in the data – the overall decreasing number of users and the timing of peaks. However, it tends to underestimate the minimum and maximum values.</p>
 <p>Finally, I will look into the weight vector and see what it reveals about people’s preference of when to use bikeshare.</p>
 <div class="cell" data-execution_count="51">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare weight vector to list of features</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>feature_weights <span class="op">=</span> pd.DataFrame(LR.w[:<span class="op">-</span><span class="dv">1</span>], X_train.columns)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>feature_weights</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare weight vector to list of features</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>feature_weights <span class="op">=</span> pd.DataFrame(LR.w[:<span class="op">-</span><span class="dv">1</span>], X_train.columns)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>feature_weights</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="51">
 
 <div>
