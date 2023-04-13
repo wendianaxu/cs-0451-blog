@@ -134,6 +134,7 @@ background-size: cover;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -216,7 +217,7 @@ background-size: cover;
 <section id="data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation">Data Preparation</h2>
 <p>The data I choose to look into is the PUMS data in for Illinois in 2019.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> folktables <span class="im">import</span> ACSDataSource, ACSEmployment, BasicProblem, adult_filter</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -229,7 +230,7 @@ background-size: cover;
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>acs_data <span class="op">=</span> data_source.get_data(states<span class="op">=</span>[STATE], download<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>possible_features<span class="op">=</span>[<span class="st">'AGEP'</span>, <span class="st">'SCHL'</span>, <span class="st">'MAR'</span>, <span class="st">'DIS'</span>, <span class="st">'ESP'</span>, <span class="st">'CIT'</span>, <span class="st">'MIG'</span>, <span class="st">'MIL'</span>, <span class="st">'ANC'</span>, <span class="st">'NATIVITY'</span>, <span class="st">'DEAR'</span>, <span class="st">'DEYE'</span>, <span class="st">'DREM'</span>, <span class="st">'SEX'</span>, <span class="st">'RAC1P'</span>, <span class="st">'ESR'</span>, <span class="st">"PINCP"</span>]</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>acs_data[possible_features].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="2">
 
 <div>
 
@@ -363,7 +364,7 @@ background-size: cover;
 </div>
 </div>
 <p>I would like to predict whether an individual’s income is over $50K based on all the variables in <code>possible_features</code> except for sex. I will create a feature matrix, a label vector, and a group label vector using the relevant variables, and split them into training data and test data.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>features_to_use <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> possible_features <span class="cf">if</span> f <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"PINCP"</span>, <span class="st">"SEX"</span>]]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>IncomeProblem <span class="op">=</span> BasicProblem(</span>
@@ -385,40 +386,40 @@ background-size: cover;
 <section id="basic-descriptives" class="level3">
 <h3 class="anchored" data-anchor-id="basic-descriptives">Basic Descriptives</h3>
 <p>Before training any models, I will first explore the basic descriptives of the dataset.</p>
-<div class="cell" data-execution_count="28">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(X_train, columns <span class="op">=</span> features_to_use)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"group"</span>] <span class="op">=</span> group_train</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"label"</span>] <span class="op">=</span> y_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> <span class="bu">len</span>(df)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>size</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>100005</code></pre>
 </div>
 </div>
 <p>There are 100005 individuals in the dataset.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(df[<span class="st">"label"</span>] <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>()<span class="op">/</span>size</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>0.25900704964751764</code></pre>
 </div>
 </div>
 <p>Around 25.9% of these individuals earn over $50K.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"group"</span>).size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>group
 1    49135
 2    50870
 dtype: int64</code></pre>
 </div>
 </div>
-<p>49,135 of these individuals are male and 50,870 are female.</p>
-<div class="cell" data-execution_count="7">
+<p>49,135 of the individuals in the dataset are male and 50,870 are female.</p>
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"group"</span>)[<span class="st">"label"</span>].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="8">
 
 <div>
 
@@ -447,7 +448,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Around 32.7% of male individuals in the dataset has income over 50k dollars, but only 19.4% of women has income over $50k.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>proportions <span class="op">=</span> df.groupby([<span class="st">"group"</span>, <span class="st">"RAC1P"</span>])[<span class="st">"label"</span>].mean().reset_index()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.barplot(data <span class="op">=</span> proportions, x <span class="op">=</span> <span class="st">"RAC1P"</span>, y <span class="op">=</span> <span class="st">"label"</span>, hue <span class="op">=</span> <span class="st">"group"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -461,7 +462,7 @@ dtype: int64</code></pre>
 <section id="training-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="training-the-model">Training the model</h2>
 <p>I choose to use a decision tree classifier for my prediction. I will use cross-validation to find out the best max depth for the model.</p>
-<div class="cell" data-execution_count="16">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -493,7 +494,7 @@ dtype: int64</code></pre>
 <span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Max depth"</span>)</span>
 <span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"CV score"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Best cv score =  0.8123893805309734
+<pre><code>Best cv score =  0.8124193790310483
 Best max depth =  8</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -505,7 +506,7 @@ Best max depth =  8</code></pre>
 <section id="auditing-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="auditing-the-model">Auditing the Model</h2>
 <p>Next, I will use the model on the test data and perform an audit for bias.</p>
-<div class="cell" data-execution_count="22">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train model and predict using test data</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>DTC <span class="op">=</span> DecisionTreeClassifier(max_depth <span class="op">=</span> best_depth)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>DTC.fit(X_train, y_train)</span>
@@ -514,7 +515,7 @@ Best max depth =  8</code></pre>
 <section id="overall-measures" class="level3">
 <h3 class="anchored" data-anchor-id="overall-measures">Overall Measures</h3>
 <p>First, we will take a look at the measures for the whole dataset.</p>
-<div class="cell" data-execution_count="25">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get confusion matrix values</span></span>
@@ -531,10 +532,10 @@ Best max depth =  8</code></pre>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FNR = "</span>, FNR)</span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FPR = "</span>, FPR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Overall accuracy =  0.8155747540196784
-PPV =  0.9173833584175446
-FNR =  0.15262400079439947
-FPR =  0.316190084344785</code></pre>
+<pre><code>Overall accuracy =  0.8154547636189104
+PPV =  0.9172221027735971
+FNR =  0.15264673751117291
+FPR =  0.31661184210526316</code></pre>
 </div>
 </div>
 <p>The overall accuracy and PPV show that the model is quite accurate. The FPR is one time higher than the FPR, suggesting that this model is more likely to wrongly predict that someone earns over $50K when they does not in reality, compared to wrongly predict that someone earns less than 50K.</p>
@@ -542,7 +543,7 @@ FPR =  0.316190084344785</code></pre>
 <section id="by-group-measures" class="level3">
 <h3 class="anchored" data-anchor-id="by-group-measures">By-Group Measures</h3>
 <p>Then we will compute the same measures by each group (i.e., male and female) and see if there are any differences.</p>
-<div class="cell" data-execution_count="32">
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>male <span class="op">=</span> group_test <span class="op">==</span> <span class="dv">1</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>female <span class="op">=</span> group_test <span class="op">==</span> <span class="dv">2</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -552,12 +553,12 @@ FPR =  0.316190084344785</code></pre>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>accuracy_female <span class="op">=</span> correct[female].mean()</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>accuracy_male, accuracy_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="32">
-<pre><code>(0.7849171180042672, 0.8447253433208489)</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>(0.7848350566223535, 0.8445692883895131)</code></pre>
 </div>
 </div>
 <p>The accuracy for male and female is similar, and a little higher for female.</p>
-<div class="cell" data-execution_count="34">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#X_test_df = pd.DataFrame(X_test, columns = [features_to_use])</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cm_male <span class="op">=</span> confusion_matrix(y_test[male],y_pred[male])</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cm_female <span class="op">=</span> confusion_matrix(y_test[female],y_pred[female])</span>
@@ -575,22 +576,22 @@ FPR =  0.316190084344785</code></pre>
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>FPR_female <span class="op">=</span> FP <span class="op">/</span> (TN <span class="op">+</span> FP)</span>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>PPV_male, PPV_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
-<pre><code>(0.9252971137521222, 0.9110832206989766)</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>(0.9251758428328887, 0.9108901332303534)</code></pre>
 </div>
 </div>
 <p>The PPV for male and female is similar too.</p>
-<div class="cell" data-execution_count="35">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>FNR_male, FNR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
-<pre><code>(0.20809548521017124, 0.10175138016371597)</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>(0.20811708532281503, 0.10177075399847677)</code></pre>
 </div>
 </div>
 <p>The false negative rate is higher for male than for female. This shows that if a man earns more than $50K, the model is more likely to make a mistake and say he earns less, compared to the same situation for a woman.</p>
-<div class="cell" data-execution_count="36">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>FPR_male, FPR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
-<pre><code>(0.24147393179145432, 0.3987012987012987)</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>(0.24177115987460815, 0.3992214532871972)</code></pre>
 </div>
 </div>
 <p>The false positive rate is higher for female than for male. This means that the model is more likely to predict that a woman earns more than $50K when she actually earns less.</p>
@@ -598,594 +599,57 @@ FPR =  0.316190084344785</code></pre>
 <section id="bias-measures" class="level3">
 <h3 class="anchored" data-anchor-id="bias-measures">Bias Measures</h3>
 <p>Finally, we will calculate the three different bias measures discussed by Chouldechova (2017).</p>
-<p>The first measure is calibration. Good calibration means that a man and a woman who received the same score (in this case, either 0 or 1) have the same probability of earning over $50K.</p>
-<div class="cell" data-execution_count="44">
+<p>The first measure is <strong>calibration</strong>. Good calibration means that a man and a woman who received the same score (in this case, either 0 or 1) have the same probability of earning over $50K.</p>
+<div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calibration</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for male predicted positive = "</span>, y_test[male][y_pred[male] <span class="op">==</span> <span class="dv">1</span>].mean())</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for female predicted positive = "</span>, y_test[female][y_pred[female] <span class="op">==</span> <span class="dv">1</span>].mean())</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for male predicted negative = "</span>, y_test[male][y_pred[male] <span class="op">==</span> <span class="dv">0</span>].mean())</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"% positive for female predicted negative = "</span>, y_test[female][y_pred[female] <span class="op">==</span> <span class="dv">0</span>].mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>% positive for male predicted positive =  0.7585260682085456
-% positive for female predicted positive =  0.6012987012987013
-% positive for male predicted negative =  0.20809548521017124
-% positive for female predicted negative =  0.10175138016371597</code></pre>
+<pre><code>% positive for male predicted positive =  0.7582288401253918
+% positive for female predicted positive =  0.6007785467128027
+% positive for male predicted negative =  0.20811708532281503
+% positive for female predicted negative =  0.10177075399847677</code></pre>
 </div>
 </div>
 <p>The probabilities are around 0.1-0.15 higher for men than for women. It looks like the model is roughly calibrated, but still, there is a slight difference in what the same score means for the two groups.</p>
+<p>Next we will look at <strong>error rate balance</strong>. According to Chouldechova (2017), a score satisfies error rate balance at a threshold <span class="math inline">\(S_{HR}\)</span> if the FPR and FNR are both equal across groups. Because our model only have binary scores, this would just mean that the FPR and FNR are equal across gender.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>FPR_male, FPR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>(0.24177115987460815, 0.3992214532871972)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>FNR_male, FNR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>(0.20811708532281503, 0.10177075399847677)</code></pre>
+</div>
+</div>
+<p>From the FPR and FNR that we calculated in the last section, we can see that the model doesn’t have error rate balance. The FPR is higher for women and the FNR is higher for men.</p>
+<p>Our last measure is <strong>statistical parity</strong>. This is satisfied if the proportion of individuals classified as positive is the same for each group.</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>TP, FP, FN, TN <span class="op">=</span> cm_male[<span class="dv">0</span>][<span class="dv">0</span>], cm_male[<span class="dv">0</span>][<span class="dv">1</span>], cm_male[<span class="dv">1</span>][<span class="dv">0</span>], cm_male[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>PR_male <span class="op">=</span> (TP<span class="op">+</span>FP) <span class="op">/</span> (TP<span class="op">+</span>FP<span class="op">+</span>TN<span class="op">+</span>FN)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>TP, FP, FN, TN <span class="op">=</span> cm_female[<span class="dv">0</span>][<span class="dv">0</span>], cm_female[<span class="dv">0</span>][<span class="dv">1</span>], cm_female[<span class="dv">1</span>][<span class="dv">0</span>], cm_female[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>PR_female <span class="op">=</span> (TP<span class="op">+</span>FP) <span class="op">/</span> (TP<span class="op">+</span>FP<span class="op">+</span>TN<span class="op">+</span>FN)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>PR_male, PR_female</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>(0.6766781552601345, 0.8082084893882646)</code></pre>
+</div>
+</div>
+<p>This model doesn’t have statistical parity – the proportion of women classified as earning over $50K is higher than that of men.</p>
 </section>
 </section>
-<section id="bikeshare-data-set" class="level2">
-<h2 class="anchored" data-anchor-id="bikeshare-data-set">Bikeshare data set</h2>
-<p>In this section, I train my linear regression model to a bikeshare data set.</p>
-<div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.read_csv(<span class="st">"https://philchodrow.github.io/PIC16A/datasets/Bike-Sharing-Dataset/day.csv"</span>)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>bikeshare.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>instant</th>
-      <th>dteday</th>
-      <th>season</th>
-      <th>yr</th>
-      <th>mnth</th>
-      <th>holiday</th>
-      <th>weekday</th>
-      <th>workingday</th>
-      <th>weathersit</th>
-      <th>temp</th>
-      <th>atemp</th>
-      <th>hum</th>
-      <th>windspeed</th>
-      <th>casual</th>
-      <th>registered</th>
-      <th>cnt</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>2011-01-01</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>6</td>
-      <td>0</td>
-      <td>2</td>
-      <td>0.344167</td>
-      <td>0.363625</td>
-      <td>0.805833</td>
-      <td>0.160446</td>
-      <td>331</td>
-      <td>654</td>
-      <td>985</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2</td>
-      <td>2011-01-02</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>2</td>
-      <td>0.363478</td>
-      <td>0.353739</td>
-      <td>0.696087</td>
-      <td>0.248539</td>
-      <td>131</td>
-      <td>670</td>
-      <td>801</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>3</td>
-      <td>2011-01-03</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.196364</td>
-      <td>0.189405</td>
-      <td>0.437273</td>
-      <td>0.248309</td>
-      <td>120</td>
-      <td>1229</td>
-      <td>1349</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>4</td>
-      <td>2011-01-04</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.200000</td>
-      <td>0.212122</td>
-      <td>0.590435</td>
-      <td>0.160296</td>
-      <td>108</td>
-      <td>1454</td>
-      <td>1562</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>5</td>
-      <td>2011-01-05</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>3</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.226957</td>
-      <td>0.229270</td>
-      <td>0.436957</td>
-      <td>0.186900</td>
-      <td>82</td>
-      <td>1518</td>
-      <td>1600</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the number of casual users over time</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ax.plot(pd.to_datetime(bikeshare[<span class="st">'dteday'</span>]), bikeshare[<span class="st">'casual'</span>])</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"Day"</span>, ylabel <span class="op">=</span> <span class="st">"# of casual users"</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
-</div>
-</div>
-<div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transforming data</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"casual"</span>, </span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mnth"</span>, </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"weathersit"</span>, </span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"workingday"</span>,</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"yr"</span>,</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temp"</span>, </span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hum"</span>, </span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"windspeed"</span>,</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"holiday"</span>]</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> bikeshare[cols]</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>bikeshare <span class="op">=</span> pd.get_dummies(bikeshare, columns <span class="op">=</span> [<span class="st">'mnth'</span>], drop_first <span class="op">=</span> <span class="st">"if_binary"</span>)</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>bikeshare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>casual</th>
-      <th>weathersit</th>
-      <th>workingday</th>
-      <th>yr</th>
-      <th>temp</th>
-      <th>hum</th>
-      <th>windspeed</th>
-      <th>holiday</th>
-      <th>mnth_2</th>
-      <th>mnth_3</th>
-      <th>mnth_4</th>
-      <th>mnth_5</th>
-      <th>mnth_6</th>
-      <th>mnth_7</th>
-      <th>mnth_8</th>
-      <th>mnth_9</th>
-      <th>mnth_10</th>
-      <th>mnth_11</th>
-      <th>mnth_12</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>331</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0.344167</td>
-      <td>0.805833</td>
-      <td>0.160446</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>131</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0.363478</td>
-      <td>0.696087</td>
-      <td>0.248539</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>120</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0.196364</td>
-      <td>0.437273</td>
-      <td>0.248309</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>108</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0.200000</td>
-      <td>0.590435</td>
-      <td>0.160296</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>82</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0.226957</td>
-      <td>0.436957</td>
-      <td>0.186900</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>726</th>
-      <td>247</td>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.254167</td>
-      <td>0.652917</td>
-      <td>0.350133</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>727</th>
-      <td>644</td>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.253333</td>
-      <td>0.590000</td>
-      <td>0.155471</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>728</th>
-      <td>159</td>
-      <td>2</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0.253333</td>
-      <td>0.752917</td>
-      <td>0.124383</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>729</th>
-      <td>364</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0.255833</td>
-      <td>0.483333</td>
-      <td>0.350754</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>730</th>
-      <td>439</td>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>0.215833</td>
-      <td>0.577500</td>
-      <td>0.154846</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-<p>731 rows × 19 columns</p>
-</div>
-</div>
-</div>
-<div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train-test split</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(bikeshare, test_size <span class="op">=</span> <span class="fl">.2</span>, shuffle <span class="op">=</span> <span class="va">False</span>)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> train.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">"casual"</span>]</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> test.drop([<span class="st">"casual"</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test[<span class="st">"casual"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit and score the model</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LinearRegression()</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train, y_train)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>LR.score(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="38">
-<pre><code>0.7318355359284503</code></pre>
-</div>
-</div>
-<p>The model has a score of 0.73.</p>
-<div class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute predictions and visualize in comparison to actual test data</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> LR.predict(X_test)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_hat, label <span class="op">=</span> <span class="st">"Predictions"</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="bu">len</span>(y_hat)), y_test, label <span class="op">=</span> <span class="st">"Test data"</span>)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>         </span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>xlab <span class="op">=</span> plt.xlabel(<span class="st">"Day"</span>)</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>ylab <span class="op">=</span> plt.ylabel(<span class="st">"Number of casual users"</span>)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>legend <span class="op">=</span> plt.legend() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="auditing-allocative-bias-blogpost_files/figure-html/cell-23-output-1.png" class="img-fluid"></p>
-</div>
-</div>
-<p>It seems that the model does a good job in predicting the general trend in the data – the overall decreasing number of users and the timing of peaks. However, it tends to underestimate the minimum and maximum values.</p>
-<p>Finally, I will look into the weight vector and see what it reveals about people’s preference of when to use bikeshare.</p>
-<div class="cell" data-execution_count="51">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare weight vector to list of features</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>feature_weights <span class="op">=</span> pd.DataFrame(LR.w[:<span class="op">-</span><span class="dv">1</span>], X_train.columns)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>feature_weights</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="51">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>weathersit</th>
-      <td>-108.371136</td>
-    </tr>
-    <tr>
-      <th>workingday</th>
-      <td>-791.690549</td>
-    </tr>
-    <tr>
-      <th>yr</th>
-      <td>280.586927</td>
-    </tr>
-    <tr>
-      <th>temp</th>
-      <td>1498.715113</td>
-    </tr>
-    <tr>
-      <th>hum</th>
-      <td>-490.100340</td>
-    </tr>
-    <tr>
-      <th>windspeed</th>
-      <td>-1242.800381</td>
-    </tr>
-    <tr>
-      <th>holiday</th>
-      <td>-235.879349</td>
-    </tr>
-    <tr>
-      <th>mnth_2</th>
-      <td>-3.354397</td>
-    </tr>
-    <tr>
-      <th>mnth_3</th>
-      <td>369.271956</td>
-    </tr>
-    <tr>
-      <th>mnth_4</th>
-      <td>518.408753</td>
-    </tr>
-    <tr>
-      <th>mnth_5</th>
-      <td>537.301886</td>
-    </tr>
-    <tr>
-      <th>mnth_6</th>
-      <td>360.807998</td>
-    </tr>
-    <tr>
-      <th>mnth_7</th>
-      <td>228.881481</td>
-    </tr>
-    <tr>
-      <th>mnth_8</th>
-      <td>241.316412</td>
-    </tr>
-    <tr>
-      <th>mnth_9</th>
-      <td>371.503854</td>
-    </tr>
-    <tr>
-      <th>mnth_10</th>
-      <td>437.600848</td>
-    </tr>
-    <tr>
-      <th>mnth_11</th>
-      <td>252.433004</td>
-    </tr>
-    <tr>
-      <th>mnth_12</th>
-      <td>90.821460</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-</div>
-<p>We can observe a couple of interesting trends from the magnitude and direction of the weights: 1. People use bikeshare more when the weather is nicer – especially when it is warmer and there is less wind. It is also interesting, though, that the <code>weathersit</code> variable is slightly negatively correlated with the number of users. I wonder what exactly this variable is measuring. 2. People use bikeshare the most in April and May. This makes sense because weather is the best during this time of the year, while summer is too hot and winter is too cold. 3. People use bikeshare more on weekends but less on holidays.</p>
+<section id="concluding-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="concluding-discussion">Concluding Discussion</h2>
+<p>With a system like what I have built in this blogpost, companies will be able to identify high-income individuals based on a set of demographics data. This would especially benefit companies that sell high-end products by enabling them to locate their target group of consumers.</p>
+<p>The main takeaway from my bias audit is that this model tends to overestimate the income of a woman and underestimate the income of a man. If the model is deployed in a large-scale setting, it would mean that more women will be incorrectly identified as marketing targets for certain products. Moreover, in the case that companies make use of predicted income for discriminatory pricing across income groups, more women will be harmed by this act.</p>
+<p>I think that this model exhibits bias in all forms that I have measured. In terms of calibration, men who received positive labels were more likely to be positive than women who received positive labels. Looking at the error rates, we also see that false positive rates are higher for women and false negative rates are higher for men. For statistical parity, we see a similar pattern where higher proportions of women than men were classified as positive. All of these measures reflect more or less the same theme.</p>
+<p>I find it interesting and unsettling that just like the recidivism prediction model that we discussed in class, the bias of this model is also potentially an artifact of inequalities present in the real world. Given a man and a woman who are similar in features other than sex, the model would predict that they have similar levels of income. In reality, however, women with similar qualifications as men are often paid less as a result of structural discrimination that is not captured by the dataset. This explains why the model tends to classify women as earning more than they do in reality.</p>
+<p>Another problem beyond bias is that whether it is ethical at all to use any model that predicts income. Even if the model is accurate and relatively unbiased, it is hard to see how such a model would benefit the individuals upon which it is used. The government may need income information for social welfare programs, but it doesn’t need to use a model to acquire such information. As for companies, I would imagine that the main motivation for predicting income is to maximize profit by discriminately charging income groups.</p>
 
 
 </section>
