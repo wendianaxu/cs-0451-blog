@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.189">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-04-19">
+<meta name="description" content="What I have learned from Dr.&nbsp;Timnit Gebru’s talk and visit.">
+
+<title>CSCI 0451 Blog - Diana Xu - Learning from Timnit Gebru</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>
+    .quarto-title-block .quarto-title-banner {
+      color: white;
+background-image: url(../../img/landscape.png);
+background-size: cover;
+    }
+    </style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">CSCI 0451 Blog - Diana Xu</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Learning from Timnit Gebru</h1>
+                  <div>
+        <div class="description">
+          <p>What I have learned from Dr.&nbsp;Timnit Gebru’s talk and visit.</p>
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 19, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="learning-from-timnit-gebru" class="level1">
+<h1>Learning from Timnit Gebru</h1>
+<section id="part-1" class="level2">
+<h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
+<p>Dr.&nbsp;Timnit Gebru is a renowned computer scientist and researcher on algorithmic bias in artificial intelligence (AI). She has contributed immensely to the field of fairness and ethics of AI. She has worked on a project called Gender Shades, where she and colleagues found that common facial recognition algorithms were much less accurate in identifying the faces of Black women compared to White men. During her time on the AI ethics team at Google, she co-authored a paper on the ethics of large language models, pointing out how they can be susceptible to bias. She was reportedly fired by Google after refusing to retract the paper by their request. Later, she founded the Distributed Artificial Intelligence Research Institute (DAIR), with the goal of studying how AI affects marginalized groups in the US. Dr.&nbsp;Gebru’s research and advocacy have led the AI community to look into the fairness and ethical issues arising from the field and have significantly shaped the discussions on such issues. Next Monday, Dr.&nbsp;Gebru will be giving a talk titled <em>Eugenics and the Promise of Utopia through Artificial General Intelligence</em> at Middlebury, and will also be virtually visiting the CS 0451 class. This is a valuable opportunity for students to learn about her work and engage in conversations with her.</p>
+<section id="talk-on-computer-vision" class="level3">
+<h3 class="anchored" data-anchor-id="talk-on-computer-vision">Talk on Computer Vision</h3>
+<p>In her talk on the ethics of computer graphics, Dr.&nbsp;Gebru discussed many ways in which current computer graphics technologies can reflect and exacerbate existing structural inequalities. She used facial recognition algorithms as a primary example, which is currently used in many fields from emotion detection in job interviews to policing systems. Dr.&nbsp;Gebru illustrated <strong>two main problems</strong> in the ethics of facial recognition technologies: how their algorithms are biased in themselves, and how they are used in ways that harm marginalized groups.</p>
+<p>Gender Shades is an example of algorithmic biases: because of the lack of diversity in data sets, facial recognition algorithms are much more accurate in identifying White men than Black women. Similar problems exist in the broader field of computer vision, where classification systems are built on social and cultural norms of the Western world.</p>
+<p>What is more alarming is probably where these computer vision are used, and why they are used in the first place. For example, why do we need binary gender classification systems? Why does the police need to use facial recognition to identify protesters? Dr.&nbsp;Gebru highlighted that for most of the time, computer vision systems are developed and used by people who are not from the marginalized groups that are the most vulnerable to the negative impacts of these systems. This amplifies the existing power imbalance. Therefore, when we talk about diversity and representation in data-driven systems, it is not enough to just include more “diverse” datasets – we need diversity in the humans behind these systems.</p>
+<section id="tldr" class="level4">
+<h4 class="anchored" data-anchor-id="tldr">tl;dr</h4>
+<p>We need to be cautious about how computer vision technologies are developed and used because they can easily amplify existing structural inequalities by disproportionately harming the most marginalized groups.</p>
+</section>
+</section>
+<section id="proposed-question-for-dr.-gebru" class="level3">
+<h3 class="anchored" data-anchor-id="proposed-question-for-dr.-gebru">Proposed Question for Dr.&nbsp;Gebru</h3>
+<p>In her talk, Dr.&nbsp;Gebru mentioned the problem with abstraction: algorithms reduce people into mathematical equations and this is where many ethical problems arise. This makes me think about how any algorithm involves some level of abstraction and cannot capture every piece of nuanced information present in the real world. I am curious about Dr.&nbsp;Gebru’s thoughts on where we should draw the line between what abstraction is acceptable and what abstraction would harm the people that it is representing.</p>
+</section>
+</section>
+</section>
+<section id="part-2-reflection-dr.-gebrus-talk" class="level1">
+<h1>Part 2: Reflection Dr.&nbsp;Gebru’s Talk</h1>
+<p>Dr.&nbsp;Gebru’s talk presents a critical perspective on the development of artificial general intelligence (AGI) by large corporations today, who are contributing to a hype for an omnipotent model and racing to build it. Dr.&nbsp;Gebru introduced the concept of “TESCREALists,” groups of people who believe that AGI can radically enhance human capabilities and thoroughly transform the society. Members of these groups include influential and wealthy people who provide tremendous resources for the development of AGI.</p>
+<p>Dr.&nbsp;Gebru argued that the TESCREALists have close connections with the idea of eugenics. They represent the second wave of eugenics, which supports using technologies such as genetic engineering to select for “desirable” traits in humans. These traits often refer to intelligence, defined and measured by a restricted mainstream standard. Dr.&nbsp;Gebru argued that this is a dangerous direction to take because it can further marginalize groups that do not fit in the standards created by those in power.</p>
+<p>Dr.&nbsp;Gebru also discussed a common narrative that TESCREALists talk about around AGI – how AGI has such great power that it will lead to either a utopia or an apocalypse depending on how it is handled. They seem to attempt to convince people that AGI will be used properly to improve public welfare only when they are in charge of creating and managing it. Dr.&nbsp;Gebru questioned this narrative from a few perspectives. First, the idea that an all-knowing model will be able to solve any problem and benefit everyone in the world does not sound realistic. The argument that AGI will make the world a more equitable place, in particular, is not convincing given how companies are exploiting labor in underdeveloped regions to keep large AI models running. Another concern that Dr.&nbsp;Gebru brought up was that the apocalyptic framing of AGI can allow these companies to shift people’s attention from current problems caused by their practices, such as data theft and labor exploitation, that are harming people right now, to a potential apocalypse that might happen in the future. Finally, Dr.&nbsp;Gebru argued that a much more rational strategy is to develop smaller models that specialize on specific fields, rather than putting all resources into one large model controlled by a few powerful organizations. This will allow people to benefit from AI that speak to their specific needs and do the job better because they are developed by people who are more specialized in their field.</p>
+<p>Dr.&nbsp;Gebru’s talk helped me to think about the potential consequences of creating such a powerful technology of AGI from a perspective that I haven’t considered before. I very much agree with her call for drawing more attention to the unethical practices behind current AI models than the potential existential crisis that a powerful AGI may pose to humankind. I feel that a large part of public discussion around AI has been focusing on the latter and fewer people are aware of how many AI systems that are in use today are already harming marginalized groups. I think that this is the most important idea that people should learn from Dr.&nbsp;Gebru’s talk because everyone should be more aware of the impacts of AI systems that many of us use frequently. I also agree that centralized control of large AI systems is a dangerous direction. What I had a harder time following was the arguments on the connections between the TESCREAL communities and eugenics. I think that more evidence is needed to justify equating all people in these groups to the type of “eugenists” that she was accusing of. But I do agree that many of the beliefs held by these groups are worth questioning and cautioning.</p>
+</section>
+<section id="part-3-reflection-on-the-process" class="level1">
+<h1>Part 3: Reflection on the Process</h1>
+<p>After the experience of interacting with Dr.&nbsp;Gebru and her work, I feel that I have developed a much deeper understanding of the ethical implications of AI and have come to realize both the importance of and challenges in grappling with these issues. I find it inspiring to engage in critical perspectives of the ethics of AI, and I think that I will be able to apply these perspectives to thinking about the implications of other powerful technologies. What I am frustrated about is that these issues seem challenging to resolve because of power dynamics in the field of AI. I also feel that the debate around this topic is very polarized and both sides have quite extreme views. This makes me worried that it may deviate from a discussion where both sides actually listen to each others’ arguments, and make it harder to generate insights for improving the field. Overall, however, I feel empowered that we get to hear voices from scientists like Dr.&nbsp;Gebru to stand up for marginalized groups and push for fairer science practices.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

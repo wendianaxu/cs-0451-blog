@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/music-genre/music_genre.html",
       "/posts/timnit-gebru/timnit-gebru.html",
       "/posts/mid-course/mid-course.html",
       "/posts/auditing-allocative-bias/auditing-allocative-bias-blogpost.html",
