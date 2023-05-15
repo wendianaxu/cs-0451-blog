@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/project-blogpost/project-blogpost.html",
+      "/posts/end-of-course-reflection/end-of-course.html",
       "/posts/music-genre/music_genre.html",
       "/posts/timnit-gebru/timnit-gebru.html",
       "/posts/mid-course/mid-course.html",
